@@ -19,3 +19,14 @@ def is_valid_file(parser, arg):
         return arg
     except Exception:
         parser.error("A file at the given path cannot be created: " % arg)
+
+def print_epoch_status(epoch_num, num_batches, current_batch_num, disc_loss, gen_loss):
+
+    prog_bar_length = 20
+
+    progress = round(prog_bar_length * float(current_batch_num) / num_batches)
+
+    prog_bar = ''.join(['='] * progress + ['.'] * (prog_bar_length - progress))
+
+    out_format = "Epoch {}: [{}] (batch {} / {}) \t Discriminator Loss: {:.2f}, \t Generator Loss: {:.2f} \r"
+    print(out_format.format(epoch_num, prog_bar, current_batch_num, num_batches, disc_loss, gen_loss), end="")
