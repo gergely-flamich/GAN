@@ -5,6 +5,7 @@ from tensorflow.keras.layers import Dense, Reshape, Conv2D, Flatten, Dropout, Ba
 import matplotlib.pyplot as plt
 import numpy as np
 
+import os
 import argparse
 
 from utils import is_valid_file, print_epoch_status
@@ -125,6 +126,12 @@ def run(args):
     # We'll use Adam to optimize
     trainer = tf.optimizers.Adam(learning_rate=1e-3)
 
+    # Create checkpoints
+    checkpoint_prefix = os.path.join(args.model_dir, "ckpt")
+    checkpoint = tf.train.Checkpoint(discriminator=disc,
+                                     generator=gen,
+                                     optimizer=trainer)
+
     # Training
     for e in range(config["num_epochs"]):
         for b, real_data in enumerate(dataset):
@@ -201,7 +208,7 @@ if __name__ == "__main__":
                     help='The model to train.')
     parser.add_argument('--no_training', action="store_false", dest="is_training", default=True,
                     help='Should we just evaluate?')
-    parser.add_argument('--model_dir', type=lambda x: is_valid_file(parser, x), default='/tmp/bayes_by_backprop',
+    parser.add_argument('--model_dir', type=lambda x: is_valid_file(parser, x), default='/tmp/gan',
                     help='The model directory.')
 
     args = parser.parse_args()
